@@ -1,7 +1,14 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.driver.v1;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import ca.ubc.clickers.Vote;
+import ca.ubc.clickers.driver.IClickerDriver;
+import ca.ubc.clickers.driver.exception.ClickerException;
+import ca.ubc.clickers.enums.FrequencyEnum;
+import ca.ubc.clickers.util.StringProcess;
 
 import com.codeminders.hidapi.HIDDevice;
 import com.codeminders.hidapi.HIDManager;
@@ -17,7 +24,7 @@ import com.codeminders.hidapi.HIDManagerTest;
  * Updated by pbeshai May 2013: synchronized methods, added ClickerException 
  *
  */
-public class IClickerDriverOld {
+public class IClickerDriverV1 implements IClickerDriver {
 	// i>Clicker base station vendor and product id.
 	private static final int VENDOR_ID  = 6273;
 	private static final int PRODUCT_ID = 336;
@@ -67,7 +74,7 @@ public class IClickerDriverOld {
 	 * @param hidManager specific HIDManager to use to interact with base station
 	 * @throws IOException
 	 */
-	public IClickerDriverOld(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID, boolean ifPrintPacket, HIDManager hidManager) throws IOException {
+	public IClickerDriverV1(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID, boolean ifPrintPacket, HIDManager hidManager) throws IOException {
 		if (hidManager == null) {
 			new HIDManagerTest();
 		}
@@ -85,6 +92,7 @@ public class IClickerDriverOld {
 	 * Start base station.
 	 * @throws InterruptedException, IOException, ClickerException
 	 */
+	@Override
 	public synchronized void startBaseStation() throws InterruptedException, IOException, ClickerException {
 		byte[] buf = new byte[BUFSIZE];
 		
@@ -168,6 +176,7 @@ public class IClickerDriverOld {
 	 * @throws ClickerException 
 	 * @throws InterruptedException, IOException, ClickerException
 	 */
+	@Override
 	public synchronized void startAcceptingVotes() throws InterruptedException, IOException, ClickerException {
 		byte[] buf = new byte[BUFSIZE];
 		
@@ -217,7 +226,8 @@ public class IClickerDriverOld {
 	 * @throws IOException 
 	 * @throws ClickerException
 	 */
-	public synchronized ArrayList<Vote> stopAcceptingVotes() throws InterruptedException, IOException, ClickerException {
+	@Override
+	public synchronized List<Vote> stopAcceptingVotes() throws InterruptedException, IOException, ClickerException {
 		byte[] buf = new byte[BUFSIZE];
 		
 		{
@@ -242,8 +252,8 @@ public class IClickerDriverOld {
 		
 		{
 			// Request votes.
-			ArrayList<Vote> voteArray = requestVotes();
-			ArrayList<Vote> voteArray2 = requestVotes();
+			List<Vote> voteArray = requestVotes();
+			List<Vote> voteArray2 = requestVotes();
 			voteArray.addAll(voteArray2);
 			
 			Thread.sleep(BEFORE_SUMMARY_DELAY_MS);
@@ -283,7 +293,8 @@ public class IClickerDriverOld {
 	 * @return ArrayList of votes.
 	 * @throws InterruptedException, IOException, ClickerException
 	 */
-	public synchronized ArrayList<Vote> requestVotes() throws InterruptedException, IOException, ClickerException {
+	@Override
+	public synchronized List<Vote> requestVotes() throws InterruptedException, IOException, ClickerException {
 		byte[] buf = new byte[BUFSIZE];
 		ArrayList<Vote> voteArray = new ArrayList<Vote>(14);
 
@@ -346,6 +357,7 @@ public class IClickerDriverOld {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
+	@Override
 	public synchronized void updateLCDRow1(String str) throws IOException, InterruptedException {
 		if(str.length() > 16) {
 			System.err.println("Bad string length");
@@ -363,6 +375,7 @@ public class IClickerDriverOld {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
+	@Override
 	public synchronized void updateLCDRow2(String str) throws IOException, InterruptedException {
 		if(str.length() > 16) {
 			System.err.println("Bad string length");

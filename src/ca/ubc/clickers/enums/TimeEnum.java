@@ -1,4 +1,4 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.enums;
 
 /**
  * TimeEnum: enum type represents various timestamp format.

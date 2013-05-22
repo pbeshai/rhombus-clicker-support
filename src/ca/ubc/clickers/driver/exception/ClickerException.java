@@ -1,4 +1,4 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.driver.exception;
 
 public class ClickerException extends Exception {
 	private static final long serialVersionUID = -3862950600304325520L;

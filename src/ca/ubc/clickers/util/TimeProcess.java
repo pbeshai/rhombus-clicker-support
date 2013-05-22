@@ -1,6 +1,8 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.util;
 
 import java.util.*;
+
+import ca.ubc.clickers.enums.TimeEnum;
 
 /**
  * TimeProcess: get timestamp information with various format.

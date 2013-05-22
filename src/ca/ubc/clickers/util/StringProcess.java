@@ -1,4 +1,4 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.util;
 
 import java.lang.String;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
  *
  */
 
-class StringProcess {
+public class StringProcess {
 	/**
 	 * All but Windows requires that the packet sent by the computer 
 	 * should be padded with an extra byte, whose values is zero, 
@@ -19,7 +19,7 @@ class StringProcess {
 	 * type is necessary. 
 	 * @return true if it is on Windows; false if it is not.
 	 */
-	static boolean isSystemWindows() {
+	public static boolean isSystemWindows() {
 		String osname = System.getProperty("os.name");
 		
 		Set<String> windowsNames = new HashSet<String>();
@@ -44,7 +44,7 @@ class StringProcess {
 	 * @param theArray: source String, hex format, with one space between each byte.
 	 * @return an array of bytes.
 	 */
-	static byte[] hexString2byte(String theArray) {
+	public static byte[] hexString2byte(String theArray) {
 		 String theArrayNoSpace = theArray.replaceAll("\\s", "");
 		 String theArrayNoSpacePadded = theArrayNoSpace;
 		 
@@ -72,7 +72,7 @@ class StringProcess {
      * @param end: end index.
      * @return hex String.
      */
-	static String byte2HexString(byte[] buf, int start, int end) {
+	public static String byte2HexString(byte[] buf, int start, int end) {
     	String response = "";
 
     	if(start < 0 || end > buf.length - 1 || end - start < 0) {

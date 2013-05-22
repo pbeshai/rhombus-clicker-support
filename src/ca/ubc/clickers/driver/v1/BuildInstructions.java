@@ -1,4 +1,7 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.driver.v1;
+
+import ca.ubc.clickers.enums.FrequencyEnum;
+import ca.ubc.clickers.util.StringProcess;
 
 /**
  * BuildInstructions: construct various instruction packets.

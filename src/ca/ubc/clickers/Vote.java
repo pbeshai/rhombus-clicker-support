@@ -1,4 +1,8 @@
-package iClickerDriverOld;
+package ca.ubc.clickers;
+
+import ca.ubc.clickers.enums.ButtonEnum;
+import ca.ubc.clickers.enums.TimeEnum;
+import ca.ubc.clickers.util.TimeProcess;
 
 /**
  * Vote: a piece of vote.

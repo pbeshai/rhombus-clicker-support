@@ -1,4 +1,4 @@
-package iClickerDriverOld;
+package ca.ubc.clickers.enums;
 
 /**
  * ButtonEnum: enum type represents the five buttons on the remote. 
