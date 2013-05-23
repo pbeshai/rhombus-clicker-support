@@ -52,6 +52,8 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @throws ClickerException, IOException, InterruptedException
 	 */
 	public IClickerDriverV2(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID, boolean ifPrintPacket) throws IOException {
+		// TODO: fix HIDManager stuff
+		// TODO: synchronize methods
 		new HIDManagerTest();
 		device = HIDManager.openById(VENDOR_ID, PRODUCT_ID, null);
 		device.disableBlocking();

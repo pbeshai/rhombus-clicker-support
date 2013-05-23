@@ -3,6 +3,7 @@ package ca.ubc.clickers;
 import java.io.IOException;
 
 import ca.ubc.clickers.driver.HIDManagerClickerApp;
+import ca.ubc.clickers.driver.IClickerDriver;
 import ca.ubc.clickers.driver.exception.ClickerException;
 import ca.ubc.clickers.driver.v1.IClickerDriverV1;
 import ca.ubc.clickers.enums.FrequencyEnum;
@@ -20,7 +21,7 @@ public class BaseClickerApp implements ClickerApp {
 	public static final FrequencyEnum DEFAULT_CHANNEL_1 = FrequencyEnum.A;
 	public static final FrequencyEnum DEFAULT_CHANNEL_2 = FrequencyEnum.A;
 	
-	protected IClickerDriverV1 driver;
+	protected IClickerDriver driver;
 	protected HIDManager hidManager;
 	
 	protected String instructorId = null;
@@ -47,7 +48,6 @@ public class BaseClickerApp implements ClickerApp {
 		
 		loadLibrary();
 		hidManager = new HIDManagerClickerApp(this);
-		
 		try {
 			initDriver();
 			initLCD();
@@ -59,7 +59,7 @@ public class BaseClickerApp implements ClickerApp {
 	}
 	
 	
-	public IClickerDriverV1 getDriver() {
+	public IClickerDriver getDriver() {
 		return driver;
 	}
 	
@@ -151,6 +151,7 @@ public class BaseClickerApp implements ClickerApp {
 	
 	
 	public void baseStationRemoved() {
+		System.out.println("Base station removed.");
 		baseStationConnected = false;
 		acceptingVotes = false;
 		driver = null;
