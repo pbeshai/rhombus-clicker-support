@@ -11,8 +11,6 @@ import ca.ubc.clickers.enums.FrequencyEnum;
 import ca.ubc.clickers.util.StringProcess;
 
 import com.codeminders.hidapi.HIDDevice;
-import com.codeminders.hidapi.HIDManager;
-import com.codeminders.hidapi.HIDManagerTest;
 
 /**
  * IClickerDriverNew: allow control of new iClicker 
@@ -24,18 +22,12 @@ import com.codeminders.hidapi.HIDManagerTest;
  */
 public class IClickerDriverV2 implements IClickerDriver {
 	// i>Clicker base station vendor and product id.
-	private static final int VENDOR_ID  = 6273;
-	private static final int PRODUCT_ID = 336;
+	public static final int VENDOR_ID  = 6273;
+	public static final int PRODUCT_ID = 336;
 	
 	// For updating LCD.
 	private static long LCD_DELAY_MS = 5L;
 
-	// Channel.
-	private FrequencyEnum freq1, freq2;
-	
-	// Id of instructor's remote.
-	private String instructorID;
-	
 	private static int BUFSIZE = 64;
 	
 	private HIDDevice device;
@@ -45,34 +37,29 @@ public class IClickerDriverV2 implements IClickerDriver {
 	
 	/**
 	 * Constructor.
-	 * @param freq1 first frequency code.
-	 * @param freq2 second frequency code.
-	 * @param instructorID id of instructor's remote which contains eight characters.
-	 * @param ifPrintPacket whether to print out the packet received from the base station.
+	 * @param device the HID device representing the clicker base station
 	 * @throws ClickerException, IOException, InterruptedException
 	 */
-	public IClickerDriverV2(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID, boolean ifPrintPacket) throws IOException {
+	public IClickerDriverV2(HIDDevice device) throws IOException {
 		// TODO: fix HIDManager stuff
-		// TODO: synchronize methods
-		new HIDManagerTest();
-		device = HIDManager.openById(VENDOR_ID, PRODUCT_ID, null);
-		device.disableBlocking();
 		
-		this.freq1 = freq1;
-		this.freq2 = freq2;
-		this.instructorID = instructorID;
-		this.ifPrintPacket = ifPrintPacket;
+		this.device = device;
+		device.disableBlocking();
 	}
 	
 	/**
 	 * Start base station.
+	 * @param freq1 first frequency code.
+	 * @param freq2 second frequency code.
+	 * @param instructorID id of instructor's remote which contains eight characters.
 	 * @throws ClickerException, IOException, InterruptedException
 	 */
-	public void startBaseStation() throws ClickerException, IOException, InterruptedException {
+	@Override
+	public synchronized void startBaseStation(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID) throws InterruptedException, IOException, ClickerException {
 		byte[] buf = new byte[BUFSIZE];
 		
 		{
-			device.write(BuildInstructions.PCC1(this.freq1, this.freq2));
+			device.write(BuildInstructions.PCC1(freq1, freq2));
 			Thread.sleep(22L);
 			
 			device.read(buf);
@@ -83,7 +70,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 		}
 		
 		{
-			device.write(BuildInstructions.PCC2(this.freq1, this.freq2));
+			device.write(BuildInstructions.PCC2(freq1, freq2));
 			Thread.sleep(5071L);
 			
 			device.read(buf);
@@ -116,7 +103,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 		}
 		
 		if(instructorID.isEmpty() == false) {
-			device.write(BuildInstructions.PCC5(this.instructorID));
+			device.write(BuildInstructions.PCC5(instructorID));
 			Thread.sleep(15);
 			
 			device.read(buf);
@@ -208,7 +195,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * Enable voting.
 	 * @throws ClickerException, IOException, InterruptedException
 	 */
-	public void startAcceptingVotes() throws ClickerException, IOException, InterruptedException {
+	public synchronized void startAcceptingVotes() throws ClickerException, IOException, InterruptedException {
 		byte[] buf = new byte[BUFSIZE];
 		
 		{	
@@ -286,7 +273,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
-	public List<Vote> stopAcceptingVotes() throws ClickerException, IOException, InterruptedException {
+	public synchronized List<Vote> stopAcceptingVotes() throws ClickerException, IOException, InterruptedException {
 		byte[] buf = new byte[BUFSIZE];
 		ArrayList<Vote> votes = new ArrayList<Vote>();
 		
@@ -380,7 +367,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @return A piece of vote if there is vote, or null if there is no vote.
 	 * @throws ClickerException, IOException, InterruptedException
 	 */
-	public Vote requestVote() throws ClickerException, IOException, InterruptedException {
+	public synchronized Vote requestVote() throws ClickerException, IOException, InterruptedException {
 		byte[] buf = new byte[BUFSIZE];
 		Vote vote = null;
 		
@@ -406,13 +393,14 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public List<Vote> requestVotes() throws ClickerException, IOException, InterruptedException {
+	public synchronized List<Vote> requestVotes() throws ClickerException, IOException, InterruptedException {
 		List<Vote> votes = new ArrayList<Vote>(14);
 		
 		Vote v = requestVote();
 		
 		while (v != null) {
 			votes.add(v);
+			v = requestVote();
 		} 
 	
 		return votes;
@@ -424,7 +412,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public void updateLCDRow1(String str) throws IOException, InterruptedException {
+	public synchronized void updateLCDRow1(String str) throws IOException, InterruptedException {
 		if(str.length() > 16) {
 			System.err.println("Bad string length");
 			return;
@@ -441,7 +429,7 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public void updateLCDRow2(String str) throws IOException, InterruptedException {
+	public synchronized void updateLCDRow2(String str) throws IOException, InterruptedException {
 		if(str.length() > 16) {
 			System.err.println("Bad string length");
 			return;
@@ -459,4 +447,14 @@ public class IClickerDriverV2 implements IClickerDriver {
 	private static void printBuf(byte[] buf) {
 		System.out.println(StringProcess.byte2HexString(buf, 0, BUFSIZE-1));
 	}
+
+	public boolean isIfPrintPacket() {
+		return ifPrintPacket;
+	}
+
+	public void setIfPrintPacket(boolean ifPrintPacket) {
+		this.ifPrintPacket = ifPrintPacket;
+	}
+	
+	
 }

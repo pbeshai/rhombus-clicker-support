@@ -5,11 +5,9 @@ import java.io.IOException;
 import ca.ubc.clickers.driver.HIDManagerClickerApp;
 import ca.ubc.clickers.driver.IClickerDriver;
 import ca.ubc.clickers.driver.exception.ClickerException;
-import ca.ubc.clickers.driver.v1.IClickerDriverV1;
 import ca.ubc.clickers.enums.FrequencyEnum;
 
 import com.codeminders.hidapi.HIDDeviceNotFoundException;
-import com.codeminders.hidapi.HIDManager;
 
 public class BaseClickerApp implements ClickerApp {
 	
@@ -22,7 +20,7 @@ public class BaseClickerApp implements ClickerApp {
 	public static final FrequencyEnum DEFAULT_CHANNEL_2 = FrequencyEnum.A;
 	
 	protected IClickerDriver driver;
-	protected HIDManager hidManager;
+	protected HIDManagerClickerApp hidManager;
 	
 	protected String instructorId = null;
 	protected FrequencyEnum channel1 = DEFAULT_CHANNEL_1;
@@ -50,14 +48,11 @@ public class BaseClickerApp implements ClickerApp {
 		hidManager = new HIDManagerClickerApp(this);
 		try {
 			initDriver();
-			initLCD();
-			baseStationConnected = true;
 		} catch (HIDDeviceNotFoundException e) {
 			System.err.println("iClicker Base Station not connected.");
 			baseStationConnected = false;
 		}
 	}
-	
 	
 	public IClickerDriver getDriver() {
 		return driver;
@@ -72,13 +67,21 @@ public class BaseClickerApp implements ClickerApp {
 	}
 	
 	protected synchronized void initLCD() throws IOException, InterruptedException {
-		driver.updateLCDRow1(LCDRow1);
-		driver.updateLCDRow2(LCDRow2);		
+		if (driver != null) {
+			driver.updateLCDRow1(LCDRow1);
+			driver.updateLCDRow2(LCDRow2);
+		}
 	}
 	
 	public synchronized void initDriver() throws IOException, InterruptedException {
-		driver = new IClickerDriverV1(channel1, channel2, instructorId, false, hidManager);
-		initLCD();
+		//driver = new IClickerDriverV1(channel1, channel2, instructorId, false, hidManager);
+		driver = hidManager.getIClickerDriver();
+		if (driver != null) {
+			initLCD();
+			baseStationConnected = true;
+		} else {
+			baseStationConnected = false;
+		}
 	}
 	
 	public synchronized void startAcceptingVotes() throws InterruptedException, IOException, ClickerException {
@@ -128,7 +131,7 @@ public class BaseClickerApp implements ClickerApp {
 	
 	protected void startBaseStation() {
 		try {
-			driver.startBaseStation();
+			driver.startBaseStation(channel1, channel2, instructorId);
 		} catch (Exception e1) {
 			System.err.println("ERROR: Failed to start base station.");
 		}

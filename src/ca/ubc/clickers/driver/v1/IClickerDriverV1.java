@@ -11,8 +11,6 @@ import ca.ubc.clickers.enums.FrequencyEnum;
 import ca.ubc.clickers.util.StringProcess;
 
 import com.codeminders.hidapi.HIDDevice;
-import com.codeminders.hidapi.HIDManager;
-import com.codeminders.hidapi.HIDManagerTest;
 
 /**
  * IClickerDriverOld: allow control of old iClicker 
@@ -26,8 +24,8 @@ import com.codeminders.hidapi.HIDManagerTest;
  */
 public class IClickerDriverV1 implements IClickerDriver {
 	// i>Clicker base station vendor and product id.
-	private static final int VENDOR_ID  = 6273;
-	private static final int PRODUCT_ID = 336;
+	public static final int VENDOR_ID  = 6273;
+	public static final int PRODUCT_ID = 336;
 	
 	// Delays happen between various packets. Do not change these magic numbers.
 	// For starting base station.
@@ -50,12 +48,6 @@ public class IClickerDriverV1 implements IClickerDriver {
 	
 	// For updating LCD.
 	private static final long LCD_DELAY_MS = 5L;
-
-	// Channel.
-	private FrequencyEnum freq1, freq2;
-	
-	// Id of instructor's remote.
-	private String instructorID;
 	
 	private static int BUFSIZE = 64;
 	private int voteIndex = 0;
@@ -67,33 +59,23 @@ public class IClickerDriverV1 implements IClickerDriver {
 	
 	/**
 	 * Constructor.
-	 * @param freq1 first frequency code.
-	 * @param freq2 second frequency code.
-	 * @param instructorID id of instructor's remote which contains eight characters.
-	 * @param ifPrintPacket whether to print out the packet received from the base station.
-	 * @param hidManager specific HIDManager to use to interact with base station
+	 * @param device the HID device representing the clicker base station
 	 * @throws IOException
 	 */
-	public IClickerDriverV1(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID, boolean ifPrintPacket, HIDManager hidManager) throws IOException {
-		if (hidManager == null) {
-			new HIDManagerTest();
-		}
-		
-		device = HIDManager.openById(VENDOR_ID, PRODUCT_ID, null);
+	public IClickerDriverV1(HIDDevice device) throws IOException {
+		this.device = device;
 		device.disableBlocking();
-		
-		this.freq1 = freq1;
-		this.freq2 = freq2;
-		this.instructorID = instructorID;
-		this.ifPrintPacket = ifPrintPacket;
 	}
 	
 	/**
 	 * Start base station.
+	 * @param freq1 first frequency code.
+	 * @param freq2 second frequency code.
+	 * @param instructorID id of instructor's remote which contains eight characters.
 	 * @throws InterruptedException, IOException, ClickerException
 	 */
 	@Override
-	public synchronized void startBaseStation() throws InterruptedException, IOException, ClickerException {
+	public synchronized void startBaseStation(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID) throws InterruptedException, IOException, ClickerException {
 		byte[] buf = new byte[BUFSIZE];
 		
 		{
@@ -116,7 +98,7 @@ public class IClickerDriverV1 implements IClickerDriver {
 		
 		if(instructorID.isEmpty() == false) {
 			// Set instructor remote.
-			device.write(BuildInstructions.setInstructor(this.instructorID));
+			device.write(BuildInstructions.setInstructor(instructorID));
 			Thread.sleep(BEFORE_READ_DELAY_MS);
 			
 			device.read(buf);
@@ -393,5 +375,13 @@ public class IClickerDriverV1 implements IClickerDriver {
 	 */
 	private static void printBuf(byte[] buf) {
 		System.out.println(StringProcess.byte2HexString(buf, 0, BUFSIZE-1));
+	}
+
+	public boolean isIfPrintPacket() {
+		return ifPrintPacket;
+	}
+
+	public void setIfPrintPacket(boolean ifPrintPacket) {
+		this.ifPrintPacket = ifPrintPacket;
 	}
 }

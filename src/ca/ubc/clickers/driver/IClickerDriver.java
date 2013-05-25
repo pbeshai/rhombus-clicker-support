@@ -5,6 +5,7 @@ import java.util.List;
 
 import ca.ubc.clickers.Vote;
 import ca.ubc.clickers.driver.exception.ClickerException;
+import ca.ubc.clickers.enums.FrequencyEnum;
 
 public interface IClickerDriver {
 
@@ -12,7 +13,7 @@ public interface IClickerDriver {
 	 * Start base station.
 	 * @throws InterruptedException, IOException, ClickerException
 	 */
-	public abstract void startBaseStation() throws InterruptedException, IOException, ClickerException;
+	public abstract void startBaseStation(FrequencyEnum freq1, FrequencyEnum freq2, String instructorID) throws InterruptedException, IOException, ClickerException;
 
 	/**
 	 * Enable voting.
