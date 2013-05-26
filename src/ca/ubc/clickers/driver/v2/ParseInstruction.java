@@ -8,7 +8,7 @@ import ca.ubc.clickers.util.StringProcess;
  * ParseInstruction: a class that interpret the packets received 
  * from the base station by comparing them with the standard ones.
  * @author Junhao
- *
+ * Update by pbeshai to support different summary string
  */
 class ParseInstruction {
 	// Length of the buffer size we are interested in.
@@ -150,15 +150,11 @@ class ParseInstruction {
 	 */
 	static boolean isSummary(byte[] buf) {
 		String headStd = "02 18 1a ";
+		String headStd2 = "01 17 aa "; // this also appears to be a summary header for some base stations
 
 		String headTest = StringProcess.byte2HexString(buf, 0, 2);
 		
-		if(headStd.compareTo(headTest) == 0) {
-			return true;
-		}
-		else {
-			return false;
-		}		
+		return headStd.compareTo(headTest) == 0 || headStd2.compareTo(headTest) == 0;
 	}
 
 	/**

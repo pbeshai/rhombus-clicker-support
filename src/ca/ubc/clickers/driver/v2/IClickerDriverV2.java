@@ -18,7 +18,7 @@ import com.codeminders.hidapi.HIDDevice;
  * starting/stopping accepting votes, requesting 
  * votes, updating LCD. 
  * @author Junhao
- *
+ * Updates by pbeshai May 2013: synchronized functions, IClickerDriver interface, HID support reworking
  */
 public class IClickerDriverV2 implements IClickerDriver {
 	// i>Clicker base station vendor and product id.

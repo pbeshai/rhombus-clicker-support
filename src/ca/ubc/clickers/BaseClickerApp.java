@@ -48,6 +48,7 @@ public class BaseClickerApp implements ClickerApp {
 		hidManager = new HIDManagerClickerApp(this);
 		try {
 			initDriver();
+			startBaseStation();
 		} catch (HIDDeviceNotFoundException e) {
 			System.err.println("iClicker Base Station not connected.");
 			baseStationConnected = false;
@@ -143,12 +144,16 @@ public class BaseClickerApp implements ClickerApp {
 		try {
 			initDriver();
 			startBaseStation(); //template method
-			acceptingVotes = false;
+			if (acceptingVotes) {
+				driver.startAcceptingVotes();
+			}
 			baseStationConnected = true;
 		} catch(IOException e) {
 			System.err.println("Error initializing base station driver");
 		} catch(InterruptedException e) {
 			System.err.println("Interrupted while trying to initialize base station");
+		} catch (ClickerException e) {
+			System.err.println("Error while trying to start accepting votes: "+e.getMessage());
 		}
 	}
 	
@@ -156,7 +161,6 @@ public class BaseClickerApp implements ClickerApp {
 	public void baseStationRemoved() {
 		System.out.println("Base station removed.");
 		baseStationConnected = false;
-		acceptingVotes = false;
 		driver = null;
 	}
 }
