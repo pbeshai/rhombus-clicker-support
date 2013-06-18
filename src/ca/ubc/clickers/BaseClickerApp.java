@@ -75,7 +75,6 @@ public class BaseClickerApp implements ClickerApp {
 	}
 	
 	public synchronized void initDriver() throws IOException, InterruptedException {
-		//driver = new IClickerDriverV1(channel1, channel2, instructorId, false, hidManager);
 		driver = hidManager.getIClickerDriver();
 		if (driver != null) {
 			initLCD();
