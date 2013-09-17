@@ -142,6 +142,7 @@ public class BaseClickerApp implements ClickerApp {
 	protected void startBaseStation() {
 		try {
 			driver.startBaseStation(channel1, channel2, instructorId);
+			log.info("Started base station.");
 		} catch (Exception e1) {
 			log.warn("Failed to start base station.");
 		}
@@ -149,11 +150,15 @@ public class BaseClickerApp implements ClickerApp {
 	
 	public void baseStationAdded() {
 		log.info("Base station added.");
-		
 		try {
-			initDriver();
+			// delay slightly to allow the base station to settle, otherwise the channel will not be set properly
+			// and it will always use AA.
+			Thread.sleep(100);
+			
+			initDriver();			
 			startBaseStation(); //template method
 			if (acceptingVotes) {
+				log.info("Accepting votes.");
 				driver.startAcceptingVotes();
 			}
 			baseStationConnected = true;

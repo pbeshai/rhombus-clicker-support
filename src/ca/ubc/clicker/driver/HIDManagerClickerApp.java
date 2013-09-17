@@ -2,6 +2,9 @@ package ca.ubc.clicker.driver;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ca.ubc.clicker.ClickerApp;
 import ca.ubc.clicker.driver.v1.IClickerDriverV1;
 import ca.ubc.clicker.driver.v2.IClickerDriverV2;
@@ -12,6 +15,8 @@ import com.codeminders.hidapi.HIDDeviceNotFoundException;
 import com.codeminders.hidapi.HIDManager;
 
 public class HIDManagerClickerApp extends HIDManager {
+	private static Logger log = LogManager.getLogger();
+
 	private static final int ICLICKER_VENDOR_ID = 6273;
 	private static final int BASE_STATION_PRODUCT_ID = 336;
 	private static final String V1_BASE_STATION_MANUFACTURER = "I-Clicker USB Base";
@@ -33,12 +38,12 @@ public class HIDManagerClickerApp extends HIDManager {
 		try {
 			for (HIDDeviceInfo info : listDevices()) {
 				if (isV1BaseStation(info)) {
-					System.err.println("Found V1 IClicker Base Station");
+					log.info("Found V1 IClicker Base Station");
 					device = openBaseStation();
 					driver = new IClickerDriverV1(device);
 					break;
 				} else if (isV2BaseStation(info)) {
-					System.err.println("Found V2 IClicker Base Station");
+					log.info("Found V2 IClicker Base Station");
 					device = openBaseStation();
 					driver = new IClickerDriverV2(device);
 					break;

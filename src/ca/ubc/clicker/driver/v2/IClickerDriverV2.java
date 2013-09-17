@@ -41,8 +41,6 @@ public class IClickerDriverV2 implements IClickerDriver {
 	 * @throws ClickerException, IOException, InterruptedException
 	 */
 	public IClickerDriverV2(HIDDevice device) throws IOException {
-		// TODO: fix HIDManager stuff
-		
 		this.device = device;
 		device.disableBlocking();
 	}
