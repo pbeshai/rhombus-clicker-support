@@ -1,4 +1,4 @@
-package ca.ubc.clickers.enums;
+package ca.ubc.clicker.enums;
 
 /**
  * FrequencyEnum: enum type represents the four available frequency. 

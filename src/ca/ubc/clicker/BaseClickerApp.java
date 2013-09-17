@@ -1,16 +1,20 @@
-package ca.ubc.clickers;
+package ca.ubc.clicker;
 
 import java.io.IOException;
 
-import ca.ubc.clickers.driver.HIDManagerClickerApp;
-import ca.ubc.clickers.driver.IClickerDriver;
-import ca.ubc.clickers.driver.exception.ClickerException;
-import ca.ubc.clickers.enums.FrequencyEnum;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import ca.ubc.clicker.driver.HIDManagerClickerApp;
+import ca.ubc.clicker.driver.IClickerDriver;
+import ca.ubc.clicker.driver.exception.ClickerException;
+import ca.ubc.clicker.enums.FrequencyEnum;
 
 import com.codeminders.hidapi.HIDDeviceNotFoundException;
 
 public class BaseClickerApp implements ClickerApp {
-	
+	private static Logger log = LogManager.getLogger();
+		
 	private static final String MAC_OS = "mac os x";
 	private static final String WINDOWS = "windows";
 	private static final String MAC_32 = "i386";
@@ -40,9 +44,15 @@ public class BaseClickerApp implements ClickerApp {
 	}
 	
 	public BaseClickerApp(String instructorId, FrequencyEnum channel1, FrequencyEnum channel2) throws IOException, InterruptedException {
+		this(instructorId, channel1, channel2, null, null);
+	}
+	
+	public BaseClickerApp(String instructorId, FrequencyEnum channel1, FrequencyEnum channel2, String LCDRow1, String LCDRow2) throws IOException, InterruptedException {
 		this.instructorId = instructorId;
 		if (channel1 != null) this.channel1 = channel1;
 		if (channel2 != null) this.channel2 = channel2;
+		if (LCDRow1 != null) this.LCDRow1 = LCDRow1;
+		if (LCDRow2 != null) this.LCDRow2 = LCDRow2;
 		
 		loadLibrary();
 		hidManager = new HIDManagerClickerApp(this);
@@ -50,7 +60,7 @@ public class BaseClickerApp implements ClickerApp {
 			initDriver();
 			startBaseStation();
 		} catch (HIDDeviceNotFoundException e) {
-			System.err.println("iClicker Base Station not connected.");
+			log.info("iClicker Base Station not connected.");
 			baseStationConnected = false;
 		}
 	}
@@ -112,18 +122,18 @@ public class BaseClickerApp implements ClickerApp {
 		
 		if (os.startsWith(WINDOWS)) {
 			if (arch.equals(WINDOWS_32)) {
-				System.err.println("Initializing for Windows 32-bit...");
+				log.info("Initializing for Windows 32-bit...");
 				System.loadLibrary("lib/hidapi-jni");
 			} else {
-				System.err.println("Initializing for Windows 64-bit...");
+				log.info("Initializing for Windows 64-bit...");
 				System.loadLibrary("lib/hidapi-jni-64");
 			}
 		} else if (os.startsWith(MAC_OS)) {
 			if (arch.equals(MAC_32)) {
-				System.err.println("Initializing for Mac OS X 32-bit...");
+				log.info("Initializing for Mac OS X 32-bit...");
 				System.loadLibrary("hidapi-jni");
 			} else {
-				System.err.println("Initializing for Mac OS X 64-bit...");
+				log.info("Initializing for Mac OS X 64-bit...");
 				System.loadLibrary("hidapi-jni-64");
 			}
 		}
@@ -133,12 +143,12 @@ public class BaseClickerApp implements ClickerApp {
 		try {
 			driver.startBaseStation(channel1, channel2, instructorId);
 		} catch (Exception e1) {
-			System.err.println("ERROR: Failed to start base station.");
+			log.warn("Failed to start base station.");
 		}
 	}
 	
 	public void baseStationAdded() {
-		System.out.println("Base station added.");
+		log.info("Base station added.");
 		
 		try {
 			initDriver();
@@ -148,17 +158,17 @@ public class BaseClickerApp implements ClickerApp {
 			}
 			baseStationConnected = true;
 		} catch(IOException e) {
-			System.err.println("Error initializing base station driver");
+			log.error("Error initializing base station driver");
 		} catch(InterruptedException e) {
-			System.err.println("Interrupted while trying to initialize base station");
+			log.error("Interrupted while trying to initialize base station");
 		} catch (ClickerException e) {
-			System.err.println("Error while trying to start accepting votes: "+e.getMessage());
+			log.error("Error while trying to start accepting votes: "+e.getMessage());
 		}
 	}
 	
 	
 	public void baseStationRemoved() {
-		System.out.println("Base station removed.");
+		log.info("Base station removed.");
 		baseStationConnected = false;
 		driver = null;
 	}

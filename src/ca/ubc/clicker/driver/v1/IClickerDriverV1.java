@@ -1,14 +1,14 @@
-package ca.ubc.clickers.driver.v1;
+package ca.ubc.clicker.driver.v1;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ubc.clickers.Vote;
-import ca.ubc.clickers.driver.IClickerDriver;
-import ca.ubc.clickers.driver.exception.ClickerException;
-import ca.ubc.clickers.enums.FrequencyEnum;
-import ca.ubc.clickers.util.StringProcess;
+import ca.ubc.clicker.Vote;
+import ca.ubc.clicker.driver.IClickerDriver;
+import ca.ubc.clicker.driver.exception.ClickerException;
+import ca.ubc.clicker.enums.FrequencyEnum;
+import ca.ubc.clicker.util.StringProcess;
 
 import com.codeminders.hidapi.HIDDevice;
 

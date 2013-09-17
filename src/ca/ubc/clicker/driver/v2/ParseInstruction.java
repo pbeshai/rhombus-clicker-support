@@ -1,8 +1,8 @@
-package ca.ubc.clickers.driver.v2;
+package ca.ubc.clicker.driver.v2;
 
-import ca.ubc.clickers.Vote;
-import ca.ubc.clickers.enums.ButtonEnum;
-import ca.ubc.clickers.util.StringProcess;
+import ca.ubc.clicker.Vote;
+import ca.ubc.clicker.enums.ButtonEnum;
+import ca.ubc.clicker.util.StringProcess;
 
 /**
  * ParseInstruction: a class that interpret the packets received 

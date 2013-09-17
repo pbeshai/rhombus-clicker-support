@@ -1,4 +1,4 @@
-package ca.ubc.clickers;
+package ca.ubc.clicker;
 
 public interface ClickerApp {
 	public void baseStationAdded();

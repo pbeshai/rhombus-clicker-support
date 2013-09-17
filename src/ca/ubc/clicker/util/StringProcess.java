@@ -1,4 +1,4 @@
-package ca.ubc.clickers.util;
+package ca.ubc.clicker.util;
 
 import java.lang.String;
 import java.util.HashSet;

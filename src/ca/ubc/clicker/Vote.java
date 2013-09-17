@@ -1,8 +1,8 @@
-package ca.ubc.clickers;
+package ca.ubc.clicker;
 
-import ca.ubc.clickers.enums.ButtonEnum;
-import ca.ubc.clickers.enums.TimeEnum;
-import ca.ubc.clickers.util.TimeProcess;
+import ca.ubc.clicker.enums.ButtonEnum;
+import ca.ubc.clicker.enums.TimeEnum;
+import ca.ubc.clicker.util.TimeProcess;
 
 /**
  * Vote: a piece of vote.

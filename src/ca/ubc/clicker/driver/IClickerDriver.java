@@ -1,11 +1,11 @@
-package ca.ubc.clickers.driver;
+package ca.ubc.clicker.driver;
 
 import java.io.IOException;
 import java.util.List;
 
-import ca.ubc.clickers.Vote;
-import ca.ubc.clickers.driver.exception.ClickerException;
-import ca.ubc.clickers.enums.FrequencyEnum;
+import ca.ubc.clicker.Vote;
+import ca.ubc.clicker.driver.exception.ClickerException;
+import ca.ubc.clicker.enums.FrequencyEnum;
 
 public interface IClickerDriver {
 

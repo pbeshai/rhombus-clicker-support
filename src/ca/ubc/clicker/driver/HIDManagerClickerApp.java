@@ -1,10 +1,10 @@
-package ca.ubc.clickers.driver;
+package ca.ubc.clicker.driver;
 
 import java.io.IOException;
 
-import ca.ubc.clickers.ClickerApp;
-import ca.ubc.clickers.driver.v1.IClickerDriverV1;
-import ca.ubc.clickers.driver.v2.IClickerDriverV2;
+import ca.ubc.clicker.ClickerApp;
+import ca.ubc.clicker.driver.v1.IClickerDriverV1;
+import ca.ubc.clicker.driver.v2.IClickerDriverV2;
 
 import com.codeminders.hidapi.HIDDevice;
 import com.codeminders.hidapi.HIDDeviceInfo;

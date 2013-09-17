@@ -1,7 +1,7 @@
-package ca.ubc.clickers.driver.v2;
+package ca.ubc.clicker.driver.v2;
 
-import ca.ubc.clickers.enums.FrequencyEnum;
-import ca.ubc.clickers.util.StringProcess;
+import ca.ubc.clicker.enums.FrequencyEnum;
+import ca.ubc.clicker.util.StringProcess;
 
 /**
  * BuildInstructions: construct various instruction packets, 

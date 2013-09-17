@@ -1,4 +1,4 @@
-package ca.ubc.clickers.enums;
+package ca.ubc.clicker.enums;
 
 /**
  * TimeEnum: enum type represents various timestamp format.
