@@ -19,6 +19,8 @@ public class BaseClickerApp implements ClickerApp {
 	private static final String WINDOWS = "windows";
 	private static final String MAC_32 = "i386";
 	private static final String WINDOWS_32 = "x86";
+	private static final String LINUX = "linux";
+	
 	
 	public static final FrequencyEnum DEFAULT_CHANNEL_1 = FrequencyEnum.A;
 	public static final FrequencyEnum DEFAULT_CHANNEL_2 = FrequencyEnum.A;
@@ -119,7 +121,7 @@ public class BaseClickerApp implements ClickerApp {
 	protected static void loadLibrary() {
 		String os = System.getProperty("os.name").toLowerCase();
 		String arch = System.getProperty("os.arch").toLowerCase();
-		
+		log.info("Attempting to load hidapi-jni library (" + os + ", " + arch + ")");
 		if (os.startsWith(WINDOWS)) {
 			if (arch.equals(WINDOWS_32)) {
 				log.info("Initializing for Windows 32-bit...");
@@ -135,6 +137,14 @@ public class BaseClickerApp implements ClickerApp {
 			} else {
 				log.info("Initializing for Mac OS X 64-bit...");
 				System.loadLibrary("hidapi-jni-64");
+			}
+		} else if (os.startsWith(LINUX)) {
+			if (arch.contains("64")) {// e.g. amd64
+				log.info("Initializing for Linux 64-bit...");
+				System.loadLibrary("hidapi-jni-64");
+			} else {
+				log.info("Initializing for Linux 32-bit...");
+				System.loadLibrary("hidapi-jni-32");
 			}
 		}
 	}
